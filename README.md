@@ -88,7 +88,9 @@ Before building, check out the project and the necessary submodules:
 
     git clone https://github.com/solvespace/solvespace
     cd solvespace
-    git submodule update --init extlib/libdxfrw extlib/mimalloc
+    git submodule update --init --recursive
+
+This will import also libdxfrw, libredwg, mimalloc into extlib/.
 
 After that, build SolveSpace as following:
 
@@ -114,7 +116,7 @@ Before building, check out the project and the necessary submodules:
 
     git clone https://github.com/solvespace/solvespace
     cd solvespace
-    git submodule update --init
+    git submodule update --init --recursive
 
 Build 64-bit SolveSpace with the following:
 
@@ -148,7 +150,7 @@ Before building, check out the project and the necessary submodules:
 
     git clone https://github.com/solvespace/solvespace
     cd solvespace
-    git submodule update --init
+    git submodule update --init --recursive
 
 After that, build SolveSpace as following:
 
@@ -182,7 +184,7 @@ Before building, check out the project and the necessary submodules:
 
     git clone https://github.com/solvespace/solvespace
     cd solvespace
-    git submodule update --init extlib/libdxfrw extlib/mimalloc
+    git submodule update --init --recursive
 
 After that, build SolveSpace as following:
 
@@ -219,7 +221,7 @@ Visual Studio install. Then, run the following in cmd or PowerShell:
 
     git clone https://github.com/solvespace/solvespace
     cd solvespace
-    git submodule update --init
+    git submodule update --init --recursive
     mkdir build
     cd build
     cmake .. -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release
@@ -235,7 +237,7 @@ in bash:
 
     git clone https://github.com/solvespace/solvespace
     cd solvespace
-    git submodule update --init
+    git submodule update --init --recursive
     mkdir build
     cd build
     cmake .. -DCMAKE_BUILD_TYPE=Release

@@ -23,3 +23,7 @@
 [submodule "extlib/mimalloc"]
 	path = extlib/mimalloc
 	url = https://github.com/microsoft/mimalloc
+[submodule "extlib/libredwg"]
+	path = extlib/libredwg
+	url = https://github.com/LibreDWG/libredwg
+	branch = work/solvespace
