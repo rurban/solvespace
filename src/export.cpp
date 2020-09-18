@@ -626,6 +626,10 @@ VectorFileWriter *VectorFileWriter::ForFile(const Platform::Path &filename) {
         static DxfFileWriter DxfWriter;
         ret = &DxfWriter;
         needOpen = false;
+    } else if(filename.HasExtension("dwg")) {
+        static DwgFileWriter DwgWriter;
+        ret = &DwgWriter;
+        needOpen = false;
     } else if(filename.HasExtension("ps") || filename.HasExtension("eps")) {
         static EpsFileWriter EpsWriter;
         ret = &EpsWriter;
@@ -647,7 +651,7 @@ VectorFileWriter *VectorFileWriter::ForFile(const Platform::Path &filename) {
     } else {
         Error("Can't identify output file type from file extension of "
         "filename '%s'; try "
-        ".step, .stp, .dxf, .svg, .plt, .hpgl, .pdf, .txt, .ngc, "
+        ".step, .stp, .dxf, .dwg, .svg, .plt, .hpgl, .pdf, .txt, .ngc, "
         ".eps, or .ps.",
             filename.raw.c_str());
         return NULL;

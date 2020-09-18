@@ -100,6 +100,8 @@ std::vector<FileFilter> MeshFileFilters = {
     { CN_("file-type", "Three.js-compatible mesh, with viewer"), { "html" } },
     { CN_("file-type", "Three.js-compatible mesh, mesh only"), { "js" } },
     { CN_("file-type", "VRML text file"), { "wrl" } },
+    { CN_("file-type", "DXF file (AutoCAD 2007)"), { "dxf" } },
+    { CN_("file-type", "DWG file (AutoCAD 2000)"), { "dwg" } },
 };
 
 std::vector<FileFilter> SurfaceFileFilters = {
@@ -112,6 +114,7 @@ std::vector<FileFilter> VectorFileFilters = {
     { CN_("file-type", "Scalable Vector Graphics"), { "svg" } },
     { CN_("file-type", "STEP file"), { "step", "stp" } },
     { CN_("file-type", "DXF file (AutoCAD 2007)"), { "dxf" } },
+    { CN_("file-type", "DWG file (AutoCAD 2000)"), { "dwg" } },
     { CN_("file-type", "HPGL file"), { "plt",  "hpgl" } },
     { CN_("file-type", "G Code"), { "ngc",  "txt" } },
 };
@@ -119,6 +122,7 @@ std::vector<FileFilter> VectorFileFilters = {
 std::vector<FileFilter> Vector3dFileFilters = {
     { CN_("file-type", "STEP file"), { "step", "stp" } },
     { CN_("file-type", "DXF file (AutoCAD 2007)"), { "dxf" } },
+    { CN_("file-type", "DWG file (AutoCAD 2000)"), { "dwg" } },
 };
 
 std::vector<FileFilter> ImportFileFilters = {

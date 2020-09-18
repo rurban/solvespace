@@ -6,6 +6,15 @@
 #include <libdxfrw.h>
 #include "solvespace.h"
 
+//#include "../extlib/libredwg/src/config.h"
+#include "dwg.h"
+#include "dwg_api.h"
+//#define DWG_LOGLEVEL DWG_LOGLEVEL_NONE
+//#include "../extlib/libredwg/src/logging.h"
+//#include "../extlib/libredwg/src/encode.h"
+//#include "../extlib/libredwg/src/decode.h"
+//#include "../extlib/libredwg/src/in_dxf.h"
+
 //-----------------------------------------------------------------------------
 // Routines for DXF export
 //-----------------------------------------------------------------------------
@@ -633,6 +642,166 @@ const char *DxfFileWriter::lineTypeName(StipplePattern stippleType) {
     return "CONTINUOUS";
 }
 
+//-----------------------------------------------------------------------------
+// Routines for DWG export
+//-----------------------------------------------------------------------------
+class Dwg_3BD {
+public:
+    Dwg_3BD() { x = 0.0; y = 0.0; z = 0.0; }
+    Dwg_3BD(double ix, double iy, double iz) {
+        x = ix; y = iy; z = iz;
+    }
+    /*BITCODE_3BD operator= (const Dwg_3BD& data) {
+        x = data.x;  y = data.y;  z = data.z;
+        return reinterpret_cast<BITCODE_3BD>(*this);
+    }*/
+    /*!< convert to unitary vector */
+    void unitize(){
+        double dist;
+        dist = sqrt(x*x + y*y + z*z);
+        if (dist > 0.0) {
+            x= x/dist;
+            y= y/dist;
+            z= z/dist;
+        }
+    }
+public:
+    double x;
+    double y;
+    double z;
+};
+
+class DwgWriteInterface {
+public:
+    DwgFileWriter *writer;
+    Dwg_Data      *dwg;
+
+    std::set<std::string> messages;
+
+    /*static BITCODE_3BD to3BD(const Vector &v) {
+        return reinterpret_cast<BITCODE_3BD>(Dwg_3BD(v.x, v.y, v.z));
+    }*/
+
+    void assignEntityDefaults(Dwg_Object_Entity *entity, hStyle hs) {
+        Style *s = Style::Get(hs);
+        //RgbaColor color = Style::Color(hs, /*forExport=*/true);
+        /*
+        entity->color24 = color.ToPackedIntBGRA();
+        entity->color = findDxfColor(color);
+        entity->layer = s->DescriptionString();
+        entity->lineType = DxfFileWriter::lineTypeName(s->stippleType);
+        entity->ltypeScale = Style::StippleScaleMm(s->h);
+        entity->setWidthMm(Style::WidthMm(hs.v));
+
+        if(s->stippleType == StipplePattern::FREEHAND) {
+            messages.insert(_("freehand lines were replaced with continuous lines"));
+        } else if(s->stippleType == StipplePattern::ZIGZAG) {
+            messages.insert(_("zigzag lines were replaced with continuous lines"));
+        }
+       */
+    }
+  
+    void writeLine(const Vector &p0, const Vector &p1, hStyle hs) {
+      dwg_point_3d start_pt, end_pt;
+      Dwg_Object *hdr = dwg_model_space_object (dwg);
+      memcpy (&start_pt, &p0, sizeof (start_pt));
+      memcpy (&end_pt, &p1, sizeof (end_pt));
+      dwg_add_LINE (hdr->tio.object->tio.BLOCK_HEADER, &start_pt, &end_pt);
+      // TODO thickness, extrusion, hs
+    }
+};
+
+bool DwgFileWriter::OutputConstraints(IdList<Constraint,hConstraint> *constraint) {
+    this->constraint = constraint;
+    return true;
+}
+
+void DwgFileWriter::StartFile() {
+    paths.clear();
+}
+
+void DwgFileWriter::Background(RgbaColor color) {
+}
+
+void DwgFileWriter::StartPath(RgbaColor strokeRgb, double lineWidth,
+                              bool filled, RgbaColor fillRgb, hStyle hs)
+{
+    BezierPath path = {};
+    paths.push_back(path);
+}
+void DwgFileWriter::FinishPath(RgbaColor strokeRgb, double lineWidth,
+                               bool filled, RgbaColor fillRgb, hStyle hs)
+{
+}
+
+void DwgFileWriter::Triangle(STriangle *tr) {
+}
+
+void DwgFileWriter::Bezier(SBezier *sb) {
+    paths.back().beziers.push_back(sb);
+}
+
+void DwgFileWriter::FinishAndCloseFile() {
+    Dwg_Data dwg;
+
+    DwgWriteInterface interface = {};
+    interface.writer = this;
+    interface.dwg    = &dwg;
+
+    std::stringstream stream;
+    //dwg_write(stream, &dwg);
+    paths.clear();
+    constraint = NULL;
+
+    if(!WriteFile(filename, stream.str())) {
+        Error("Couldn't write to '%s'", filename.raw.c_str());
+        return;
+    }
+
+    if(!interface.messages.empty()) {
+        std::string text = _("Some aspects of the drawing have no DWG equivalent and "
+                             "were not exported:\n");
+        for(const std::string &message : interface.messages) {
+            text += " * " + message + "\n";
+        }
+        Message(text.c_str());
+    }
+}
+
+bool DwgFileWriter::NeedToOutput(Constraint *c) {
+    switch(c->type) {
+        case Constraint::Type::PT_PT_DISTANCE:
+        case Constraint::Type::PT_LINE_DISTANCE:
+        case Constraint::Type::DIAMETER:
+        case Constraint::Type::ANGLE:
+        case Constraint::Type::COMMENT:
+            return c->IsVisible();
+
+        default: // See writeEntities().
+            break;
+    }
+    return false;
+}
+
+const char *DwgFileWriter::lineTypeName(StipplePattern stippleType) {
+    switch(stippleType) {
+        case StipplePattern::CONTINUOUS:   return "CONTINUOUS";
+        case StipplePattern::SHORT_DASH:   return "DASHED";
+        case StipplePattern::DASH:         return "DASHED";
+        case StipplePattern::LONG_DASH:    return "DASHEDX2";
+        case StipplePattern::DASH_DOT:     return "DASHDOT";
+        case StipplePattern::DASH_DOT_DOT: return "DIVIDE";
+        case StipplePattern::DOT:          return "DOT";
+
+        case StipplePattern::FREEHAND:
+        case StipplePattern::ZIGZAG:
+            /* TODO: declare corresponding DWG line type */
+           break;
+    }
+
+    return "CONTINUOUS";
+}
+  
 //-----------------------------------------------------------------------------
 // Routines for EPS output
 //-----------------------------------------------------------------------------
