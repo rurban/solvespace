@@ -175,6 +175,7 @@ set(solvespace_core_SOURCES
     group.cpp
     groupmesh.cpp
     importdxf.cpp
+    importdwg.cpp
     importidf.cpp
     mesh.cpp
     modify.cpp
@@ -219,6 +220,7 @@ add_dependencies(solvespace-core
 target_link_libraries(solvespace-core
     ${OpenMP_CXX_LIBRARIES}
     dxfrw
+    redwg
     ${util_LIBRARIES}
     ${ZLIB_LIBRARY}
     ${PNG_LIBRARY}
