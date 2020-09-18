@@ -2,27 +2,27 @@
 #
 # Sets the usual variables expected for find_package scripts:
 #
-# SPACEWARE_INCLUDE_DIR - header location
-# SPACEWARE_LIBRARIES - library to link against
-# SPACEWARE_FOUND - true if libspnav was found.
+# SpaceWare_INCLUDE_DIR - header location
+# SpaceWare_LIBRARIES - library to link against
+# SpaceWare_FOUND - true if libspnav was found.
 
 if(UNIX)
 
-    find_path(SPACEWARE_INCLUDE_DIR
+    find_path(SpaceWare_INCLUDE_DIR
         spnav.h)
 
-    find_library(SPACEWARE_LIBRARY
+    find_library(SpaceWare_LIBRARY
         NAMES spnav libspnav)
 
-    # Support the REQUIRED and QUIET arguments, and set SPACEWARE_FOUND if found.
+    # Support the REQUIRED and QUIET arguments, and set SpaceWare_FOUND if found.
     include(FindPackageHandleStandardArgs)
-    FIND_PACKAGE_HANDLE_STANDARD_ARGS(SPACEWARE DEFAULT_MSG
-        SPACEWARE_LIBRARY SPACEWARE_INCLUDE_DIR)
+    FIND_PACKAGE_HANDLE_STANDARD_ARGS(SpaceWare DEFAULT_MSG
+        SpaceWare_LIBRARY SpaceWare_INCLUDE_DIR)
 
-    if(SPACEWARE_FOUND)
-        set(SPACEWARE_LIBRARIES ${SPACEWARE_LIBRARY})
+    if(SpaceWare_FOUND)
+        set(SpaceWare_LIBRARIES ${SpaceWare_LIBRARY})
     endif()
 
-    mark_as_advanced(SPACEWARE_LIBRARY SPACEWARE_INCLUDE_DIR)
+    mark_as_advanced(SpaceWare_LIBRARY SpaceWare_INCLUDE_DIR)
 
 endif()

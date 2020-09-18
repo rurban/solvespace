@@ -266,10 +266,10 @@ if(ENABLE_GUI)
 
         if(MSVC AND ${CMAKE_SIZEOF_VOID_P} EQUAL 4)
             message(STATUS "Using prebuilt SpaceWare")
-            set(SPACEWARE_FOUND TRUE)
-            set(SPACEWARE_INCLUDE_DIR
+            set(SpaceWare_FOUND TRUE)
+            set(SpaceWare_INCLUDE_DIR
                 "${CMAKE_SOURCE_DIR}/extlib/si")
-            set(SPACEWARE_LIBRARIES
+            set(SpaceWare_LIBRARIES
                 "${CMAKE_SOURCE_DIR}/extlib/si/siapp.lib")
         endif()
     elseif(APPLE)

@@ -6,7 +6,7 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR})
 
-set(HAVE_SPACEWARE ${SPACEWARE_FOUND})
+set(HAVE_SPACEWARE ${SpaceWare_FOUND})
 
 if(NOT WIN32 OR APPLE)
     if(GTKMM_gtkmm-3.0_VERSION VERSION_LESS "3.24.0")
@@ -88,9 +88,9 @@ if(Backtrace_FOUND)
         ${Backtrace_INCLUDE_DIRS})
 endif()
 
-if(SPACEWARE_FOUND)
+if(SpaceWare_FOUND)
     include_directories(
-        ${SPACEWARE_INCLUDE_DIR})
+        ${SpaceWare_INCLUDE_DIR})
 endif()
 
 if(OPENGL STREQUAL 3)
@@ -114,7 +114,7 @@ if(WIN32)
 
     set(platform_LIBRARIES
         comctl32
-        ${SPACEWARE_LIBRARIES})
+        ${SpaceWare_LIBRARIES})
 elseif(APPLE)
     add_compile_options(
         -fobjc-arc)
@@ -126,7 +126,7 @@ else()
         platform/guigtk.cpp)
 
     set(platform_LIBRARIES
-        ${SPACEWARE_LIBRARIES})
+        ${SpaceWare_LIBRARIES})
 
     foreach(pkg_config_lib GTKMM JSONC FONTCONFIG)
         include_directories(${${pkg_config_lib}_INCLUDE_DIRS})
