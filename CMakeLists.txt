@@ -182,6 +182,8 @@ message(STATUS "Using in-tree libdxfrw")
 add_subdirectory(extlib/libdxfrw)
 
 message(STATUS "Using in-tree libredwg")
+set(LIBREDWG_LIBONLY ON CACHE BOOL "")
+set(LIBREDWG_DISABLE_JSON ON CACHE BOOL "")
 add_subdirectory(extlib/libredwg)
 
 message(STATUS "Using in-tree mimalloc")
